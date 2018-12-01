@@ -7,7 +7,7 @@ def first_star(frequency_offsets):
     return total_offset
 
 def second_star(frequency_offsets):
-    infinite_list = list_utils.InfiniteList(frequency_offsets)
+    infinite_list = list_utils.infinitize(frequency_offsets)
     seen_frequencies = set()
     total_offset = 0
     for offset in infinite_list:
