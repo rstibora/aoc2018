@@ -22,6 +22,3 @@ def day_01():
         frequency_offsets = [int(x) for x in input_file]
         print("First star solution: {0}".format(first_star(frequency_offsets)))
         print("Second star solution: {0}".format(second_star(frequency_offsets)))
-
-if __name__ == "__main__":
-    day_01()
