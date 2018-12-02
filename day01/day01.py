@@ -20,5 +20,7 @@ def second_star(frequency_offsets):
 def day_01():
     with open("day01/input.txt", "r") as input_file:
         frequency_offsets = [int(x) for x in input_file]
-        print("First star solution: {0}".format(first_star(frequency_offsets)))
-        print("Second star solution: {0}".format(second_star(frequency_offsets)))
+        print("Day 1")
+        print("\tFirst star solution: {0}".format(first_star(frequency_offsets)))
+        print("\tSecond star solution: {0}".format(second_star(frequency_offsets)))
+        print()
