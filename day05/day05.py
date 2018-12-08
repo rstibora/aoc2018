@@ -1,3 +1,5 @@
+import string
+
 def reduce_polymer(polymer):
     def valid_reduction_pair(a, b):
         if a.lower() == b and a == b.upper():
@@ -22,12 +24,21 @@ def reduce_polymer(polymer):
         polymer = one_pass_reduce(polymer)
     return polymer
 
+def filter_out_unit(target_unit, polymer):
+    target_unit = target_unit.lower()
+    return [unit for unit in polymer if unit.lower() != target_unit]
+
 def first_star(input):
-    input = [char for char in input]
-    return len(reduce_polymer(input))
+    polymer = [char for char in input]
+    return len(reduce_polymer(polymer))
 
 def second_star(input):
-    pass
+    polymer = [char for char in input]
+    lengths = []
+    for char in string.ascii_lowercase:
+        filtered_polymer = filter_out_unit(char, polymer)
+        lengths.append((char, len(reduce_polymer(filtered_polymer))))
+    return sorted(lengths, key=lambda x: x[1])[0][1]
 
 def day_05():
     with open("day05/input.txt", "r") as input_file:
