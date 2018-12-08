@@ -1,12 +1,13 @@
-from day01 import day01
-from day02 import day02
-from day03 import day03
-from day04 import day04
-from day05 import day05
+from day01 import solution as day01_solution
+from day02 import solution as day02_solution
+from day03 import solution as day03_solution
+from day04 import solution as day04_solution
+from day05 import solution as day05_solution
+
 
 if __name__ == "__main__":
-    day01.day_01()
-    day02.day_02()
-    day03.day_03()
-    day04.day_04()
-    day05.day_05()
+    day01_solution.main()
+    day02_solution.main()
+    day03_solution.main()
+    day04_solution.main()
+    day05_solution.main()

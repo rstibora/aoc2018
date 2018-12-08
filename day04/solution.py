@@ -1,6 +1,8 @@
 import datetime
 import re
 
+from utilities import framework
+
 def collect_sleep_data(messages):
     def get_minutes(begin, end):
         return (end - begin).seconds // 60
@@ -77,13 +79,5 @@ def second_star(input):
     most_regular_sleeper = sorted(most_frequent_sleep.items(), key=lambda x: x[1], reverse=True)[0][0]
     return most_regular_sleeper * sleep_heatmap[most_regular_sleeper].index(most_frequent_sleep[most_regular_sleeper])
 
-def day_04():
-    with open("day04/input.txt", "r") as input_file:
-        input_data = input_file.readlines()
-        print("Day 4")
-        print("\tFirst star solution: {0}".format(first_star(input_data)))
-        print("\tSecond star solution: {0}".format(second_star(input_data)))
-        print()
-
-if __name__ == "__main__":
-    day_04()
+def main():
+    return framework.day_main(4, first_star, second_star)

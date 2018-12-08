@@ -1,3 +1,4 @@
+from utilities import framework
 
 def first_star(ids):
     def count_chars(id):
@@ -43,12 +44,5 @@ def second_star(ids):
             if num_diffs == 1:
                 return "".join(same_string)
 
-def day_02():
-    with open("day02/input.txt", "r") as input_file:
-        ids = []
-        for line in input_file:
-            ids.append(line[:-1])
-        print("Day 2")
-        print("\tFirst star solution: {0}".format(first_star(ids)))
-        print("\tSecond star solution: {0}".format(second_star(ids)))
-        print()
+def main():
+    return framework.day_main(2, first_star, second_star)

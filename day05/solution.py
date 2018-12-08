@@ -1,5 +1,7 @@
 import string
 
+from utilities import framework
+
 def reduce_polymer(polymer):
     def valid_reduction_pair(a, b):
         if a.lower() == b and a == b.upper():
@@ -29,24 +31,16 @@ def filter_out_unit(target_unit, polymer):
     return [unit for unit in polymer if unit.lower() != target_unit]
 
 def first_star(input):
-    polymer = [char for char in input]
+    polymer = [char for char in input[0][:-1]]
     return len(reduce_polymer(polymer))
 
 def second_star(input):
-    polymer = [char for char in input]
+    polymer = [char for char in input[0][:-1]]
     lengths = []
     for char in string.ascii_lowercase:
         filtered_polymer = filter_out_unit(char, polymer)
         lengths.append((char, len(reduce_polymer(filtered_polymer))))
     return sorted(lengths, key=lambda x: x[1])[0][1]
 
-def day_05():
-    with open("day05/input.txt", "r") as input_file:
-        input_data = input_file.readline()[:-1]
-        print("Day 5")
-        print("\tFirst star solution: {0}".format(first_star(input_data)))
-        print("\tSecond star solution: {0}".format(second_star(input_data)))
-        print()
-
-if __name__ == "__main__":
-    day_05()
+def main():
+    return framework.day_main(5, first_star, second_star)
