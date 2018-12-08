@@ -1,5 +1,4 @@
-def first_star(input):
-    input = [char for char in input]
+def reduce_polymer(polymer):
     def valid_reduction_pair(a, b):
         if a.lower() == b and a == b.upper():
             return True
@@ -11,20 +10,21 @@ def first_star(input):
     def one_pass_reduce(input):
         if len(input) == 1:
             return input
-
         for idx, _ in enumerate(input[:-1]):
             if valid_reduction_pair(input[idx], input[idx + 1]):
                 input[idx] = "_"
                 input[idx+1] = "_"
-
         return [poly for poly in input if poly != "_"]
 
     current_length = None
-    while current_length != len(input):
-        current_length = len(input)
-        input = one_pass_reduce(input)
+    while current_length != len(polymer):
+        current_length = len(polymer)
+        polymer = one_pass_reduce(polymer)
+    return polymer
 
-    return len(input)
+def first_star(input):
+    input = [char for char in input]
+    return len(reduce_polymer(input))
 
 def second_star(input):
     pass
