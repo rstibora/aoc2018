@@ -1,4 +1,4 @@
-from utilities import list_utils, framework
+from utilities import list_utils
 
 def first_star(input):
     frequency_offsets = [int(x) for x in input]
@@ -18,6 +18,3 @@ def second_star(input):
             return total_offset
         else:
             seen_frequencies.add(total_offset)
-
-def main():
-    return framework.day_main(1, first_star, second_star)

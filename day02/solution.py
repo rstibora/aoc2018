@@ -1,5 +1,3 @@
-from utilities import framework
-
 def first_star(ids):
     def count_chars(id):
         counts = {}
@@ -43,6 +41,3 @@ def second_star(ids):
             num_diffs, same_string = compare_ids(id_a, id_b)
             if num_diffs == 1:
                 return "".join(same_string)
-
-def main():
-    return framework.day_main(2, first_star, second_star)

@@ -1,7 +1,5 @@
 import string
 
-from utilities import framework
-
 def reduce_polymer(polymer):
     def valid_reduction_pair(a, b):
         if a.lower() == b and a == b.upper():
@@ -41,6 +39,3 @@ def second_star(input):
         filtered_polymer = filter_out_unit(char, polymer)
         lengths.append((char, len(reduce_polymer(filtered_polymer))))
     return sorted(lengths, key=lambda x: x[1])[0][1]
-
-def main():
-    return framework.day_main(5, first_star, second_star)

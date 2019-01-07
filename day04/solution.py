@@ -1,8 +1,6 @@
 import datetime
 import re
 
-from utilities import framework
-
 def collect_sleep_data(messages):
     def get_minutes(begin, end):
         return (end - begin).seconds // 60
@@ -78,6 +76,3 @@ def second_star(input):
         most_frequent_sleep[guard_id] = max(sleap_map)
     most_regular_sleeper = sorted(most_frequent_sleep.items(), key=lambda x: x[1], reverse=True)[0][0]
     return most_regular_sleeper * sleep_heatmap[most_regular_sleeper].index(most_frequent_sleep[most_regular_sleeper])
-
-def main():
-    return framework.day_main(4, first_star, second_star)

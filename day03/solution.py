@@ -1,8 +1,6 @@
 import re
 import itertools
 
-from utilities import framework
-
 class Claim():
     def __init__(self, string_description):
         matches = re.search("#([0-9]+) @ ([0-9]+),([0-9]+): ([0-9]+)x([0-9]+)", string_description)
@@ -35,6 +33,3 @@ def second_star(input):
         if len(claim) > 1:
             claim_ids -= claim
     return claim_ids.pop()
-
-def main():
-    return framework.day_main(3, first_star, second_star)
