@@ -9,11 +9,8 @@ def day_main(day_number, input, first_star_solver, secon_star_solver):
         print("\tSecond star: {0}".format(secon_star_solver(input)))
 
 def get_solution_for_day(day, input_file):
-    try:
-        solution = importlib.import_module("day{:02}.solution".format(day))
-        day_main(day, input_file, solution.first_star, solution.second_star)
-    except Exception as e:
-        print("No solution found for day {0}: {1}".format(day, e))
+    solution = importlib.import_module("day{:02}.solution".format(day))
+    day_main(day, input_file, solution.first_star, solution.second_star)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Advent of Code 2018')
