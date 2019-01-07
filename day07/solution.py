@@ -1,5 +1,3 @@
-from utilities import framework
-
 def first_star(input):
     def parse_rules(input):
         rules = []
@@ -26,10 +24,7 @@ def first_star(input):
     while ready_steps:
         done_steps.append(min(ready_steps))
         ready_steps = find_ready_steps(rules, done_steps)
-    return done_steps
+    return "".join(done_steps)
 
 def second_star(input):
     pass
-
-def main():
-    framework.day_main(7, first_star, second_star)
