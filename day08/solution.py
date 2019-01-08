@@ -6,18 +6,15 @@ def first_star(input):
         meta_length = data_range[1]
         header_length = 2
         num_of_children = data_range[0]
-        if num_of_children == 0:
-            meta_data_sum = sum(data_range[header_length:(header_length + meta_length)])
-            return (header_length + meta_length, meta_data_sum)
-        else:
-            total_sum = 0
-            range_start = header_length
-            for _ in range(num_of_children):
-                child = sum_child_metadata(data_range[range_start:-meta_length])
-                range_start += child[0]
-                total_sum += child[1]
-            total_sum += sum(data_range[range_start:(range_start+meta_length)])
-            return (range_start + meta_length, total_sum)
+
+        total_sum = 0
+        range_start = header_length
+        for _ in range(num_of_children):
+            child = sum_child_metadata(data_range[range_start:-meta_length])
+            range_start += child[0]
+            total_sum += child[1]
+        total_sum += sum(data_range[range_start:(range_start+meta_length)])
+        return (range_start + meta_length, total_sum)
 
     data = parse_input(input)
     return sum_child_metadata(data)[1]
