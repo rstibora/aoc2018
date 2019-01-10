@@ -1,3 +1,4 @@
+# TODO: rewrite to C++?
 class LinkedList:
     class Node:
         def __init__(self, value, prev=None, next=None):
@@ -71,11 +72,8 @@ class LinkedList:
             del current
         self.number_of_nodes -= 1
 
-def first_star(input):
-    num_of_players = int(input[0].split()[0])
-    last_marble = int(input[0].split()[6])
+def solve(num_of_players, last_marble):
     scores = num_of_players * [0]
-
     marbles = LinkedList()
     marbles.insert(0)
     marble = 1
@@ -92,5 +90,12 @@ def first_star(input):
             marble += 1
     return max(scores)
 
+def first_star(input):
+    num_of_players = int(input[0].split()[0])
+    last_marble = int(input[0].split()[6])
+    return solve(num_of_players, last_marble)
+
 def second_star(input):
-    pass
+    num_of_players = int(input[0].split()[0])
+    last_marble = int(input[0].split()[6])
+    return solve(num_of_players, last_marble * 100)
