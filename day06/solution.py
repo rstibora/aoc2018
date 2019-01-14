@@ -20,10 +20,8 @@ def first_star(input):
     def is_on_border(coord, convex_hull):
         return coord[0] == convex_hull[0][0] or coord[0] == convex_hull[1][0] or coord[1] == convex_hull[0][1] or coord[1] == convex_hull[1][1]
 
-    coord_area = {}
     coords = [(int(input_line.split(',')[0]), int(input_line.split(',')[1])) for input_line in input]
-    for coord in coords:
-        coord_area[coord] = 0
+    coords_area = {key:0 for key in coords}
     convex_hull = get_convex_hull(coords)
     for x in range(convex_hull[0][0], convex_hull[1][0] + 1):
         for y in range(convex_hull[0][1], convex_hull[1][1] + 1):
@@ -31,11 +29,11 @@ def first_star(input):
             if not closest:
                 continue
             if is_on_border((x, y), convex_hull):
-                coord_area[closest] = None
+                coords_area[closest] = None
                 continue
-            elif coord_area[closest] is not None:
-                coord_area[closest] += 1
-    return max([area for area in coord_area.values() if area])
+            elif coords_area[closest] is not None:
+                coords_area[closest] += 1
+    return max([area for area in coords_area.values() if area])
 
 def second_star(input):
     pass
