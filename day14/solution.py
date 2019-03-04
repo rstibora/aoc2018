@@ -23,4 +23,10 @@ def first_star(input):
     return "".join([str(x) for x in score_board[-10:]])
 
 def second_star(input):
-    pass
+    score_board = [3, 7]
+    current_recipes = [0, 1]
+    pattern = [int(x) for x in str(parse_input(input))]
+    pattern_length = len(pattern)
+    while score_board[-pattern_length:] != pattern:
+        generate_recipes(score_board, current_recipes)
+    return len(score_board) - len(pattern)
