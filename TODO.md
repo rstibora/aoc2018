@@ -1,0 +1,1 @@
+- Timing flag for `main.py` to show run times of the solutions.
