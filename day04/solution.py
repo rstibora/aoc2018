@@ -1,40 +1,53 @@
 import datetime
 import re
 
-def collect_sleep_data(messages):
+from collections import namedtuple
+from operator import itemgetter, attrgetter
+
+STATE_ASLEEP = "asleep"
+STATE_AWAKE = "awake"
+
+Record = namedtuple("Record", ["timestamp", "message"])
+
+def get_sleep_data(records):
+    """Returns a list of per-minute records of sleep data grouped by guard id and date."""
     def get_minutes(begin, end):
+        """Get length of [begin, end] interval in minutes."""
         return (end - begin).seconds // 60
+
+    records = sorted(records, key=attrgetter("message"))
+    records.sort(key=attrgetter("timestamp"))
 
     guard_sleep = {}
     current_guard_id = None
-    for idx, message in enumerate(messages):
-        timestamp = message[0]
-        action = message[1]
-        date_only = datetime.date(timestamp.year, timestamp.month, timestamp.day)
-        if action[:5] == "Guard":
-            current_guard_id = int(re.search("#([0-9]+)", action).group(1))
+    for idx, record in enumerate(records):
+        date_only = datetime.date(record.timestamp.year, record.timestamp.month, record.timestamp.day)
+        if record.message[:5] == "Guard":
+            current_guard_id = int(re.search("#([0-9]+)", record.message).group(1))
             if current_guard_id not in guard_sleep:
                 guard_sleep[current_guard_id] = {}
-            guard_sleep[current_guard_id][date_only] = timestamp.minute * ["awake"]
-        elif action[:5] == "wakes":
-            number_of_minutes = get_minutes(messages[idx-1][0], timestamp)
-            guard_sleep[current_guard_id][date_only] += number_of_minutes * ["asleep"]
-        elif action[:5] == "falls":
-            number_of_minutes = get_minutes(messages[idx-1][0], timestamp)
-            guard_sleep[current_guard_id][date_only] += number_of_minutes * ["awake"]
+            guard_sleep[current_guard_id][date_only] = record.timestamp.minute * [STATE_AWAKE]
+        elif record.message[:5] == "wakes":
+            number_of_minutes = get_minutes(records[idx-1].timestamp, record.timestamp)
+            guard_sleep[current_guard_id][date_only] += number_of_minutes * [STATE_ASLEEP]
+        elif record.message[:5] == "falls":
+            number_of_minutes = get_minutes(records[idx-1].timestamp, record.timestamp)
+            guard_sleep[current_guard_id][date_only] += number_of_minutes * [STATE_AWAKE]
     return guard_sleep
 
-def generate_sleap_map(sleep_data):
-    sleep_heatmap = {}
+def get_per_minute_sleep_data(sleep_data):
+    """Returns a dictionary of per-minute total sleep (accross all days) data for each guard."""
+    per_minute_sleep = {}
     for guard_id in sleep_data.keys():
-        sleep_heatmap[guard_id] = 60 * [0]
+        per_minute_sleep[guard_id] = 60 * [0]
         for sleep_in_day in sleep_data[guard_id].values():
             for minute, state in enumerate(sleep_in_day):
-                if state == "asleep":
-                    sleep_heatmap[guard_id][minute] += 1
-    return sleep_heatmap
+                if state == STATE_ASLEEP:
+                    per_minute_sleep[guard_id][minute] += 1
+    return per_minute_sleep
 
-def get_chronological(input):
+def parse_input(input):
+    """Returns a list of sleep records."""
     parsed_input = []
     for line in input:
         time = datetime.datetime.strptime(line.split("] ")[0][1:], "%Y-%m-%d %H:%M")
@@ -42,37 +55,25 @@ def get_chronological(input):
             time += datetime.timedelta(1)
             time = time.replace(hour=0, minute=0)
         message = line.split("] ")[1]
-        parsed_input.append((time, message))
-    parsed_input.sort(key=(lambda x: x[1]))
-    parsed_input.sort(key=(lambda x: x[0]))
+        parsed_input.append(Record(time, message))
     return parsed_input
 
 def first_star(input):
-    sorted_messages = get_chronological(input)
-    guard_sleep = collect_sleep_data(sorted_messages)
+    sleep_records = parse_input(input)
+    guard_sleep = get_sleep_data(sleep_records)
+    sleep_heatmap = get_per_minute_sleep_data(guard_sleep)
+    total_guard_sleep = {guard_id: sum(sleep_heatmap[guard_id]) for guard_id in guard_sleep.keys()}
 
-    total_guard_sleep = {}
-    for guard_id, sleep_data in guard_sleep.items():
-        for data in sleep_data.values():
-            minutes_of_sleep = len([state for state in data if state == "asleep"])
-            if data[:-1] == "asleep":
-                minutes_of_sleep += 60 - len(data)
-            if not guard_id in total_guard_sleep:
-                total_guard_sleep[guard_id] = 0
-            total_guard_sleep[guard_id] += minutes_of_sleep
-
-    guard_id_with_most_sleep = sorted(list(total_guard_sleep.items()), key=(lambda x: x[1]), reverse=True)[0][0]
-    sleep_heatmap = generate_sleap_map(guard_sleep)
+    guard_id_with_most_sleep = max(total_guard_sleep.items(), key=itemgetter(1))[0]
     most_sleepy_minute = sleep_heatmap[guard_id_with_most_sleep].index(max(sleep_heatmap[guard_id_with_most_sleep]))
     return guard_id_with_most_sleep * most_sleepy_minute
 
 def second_star(input):
-    sorted_messages = get_chronological(input)
-    guard_sleep = collect_sleep_data(sorted_messages)
-    sleep_heatmap = generate_sleap_map(guard_sleep)
+    sleep_records = parse_input(input)
+    guard_sleep = get_sleep_data(sleep_records)
+    sleep_heatmap = get_per_minute_sleep_data(guard_sleep)
 
-    most_frequent_sleep = {}
-    for guard_id, sleap_map in sleep_heatmap.items():
-        most_frequent_sleep[guard_id] = max(sleap_map)
-    most_regular_sleeper = sorted(most_frequent_sleep.items(), key=lambda x: x[1], reverse=True)[0][0]
-    return most_regular_sleeper * sleep_heatmap[most_regular_sleeper].index(most_frequent_sleep[most_regular_sleeper])
+    most_regular_minute_per_guard = {guard_id: max(enumerate(sleep_heatmap[guard_id]), key=itemgetter(1)) for guard_id in guard_sleep.keys()}
+    most_regular_sleeper = max(most_regular_minute_per_guard.items(), key=lambda x: x[1][1])[0]
+    most_regular_minute = most_regular_minute_per_guard[most_regular_sleeper][0]
+    return most_regular_sleeper * most_regular_minute
