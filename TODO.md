@@ -1,1 +1,2 @@
-- Timing flag for `main.py` to show run times of the solutions.
+- C++ day 12 star 2 solution
+- Timing flag for `main.py` to show run times of the solutions
