@@ -1,6 +1,5 @@
 from copy import deepcopy
-
-NUMBER_OF_GENERATIONS = 20
+import importlib
 
 def parse_inital_state(input):
     return [char for char in input[0].split()[2]]
@@ -30,17 +29,24 @@ def apply_rules(state, rules):
                 new_state[idx] = rule[1]
     return new_state
 
-def first_star(input):
-    rules = parse_rules(input)
-    state = parse_inital_state(input)
+def solve_generations(state, rules, no_of_generations):
     negative_pots = 0
-
-    for _ in range(NUMBER_OF_GENERATIONS):
+    for _ in range(no_of_generations):
         state, added_pots = pad_with_empty(state)
         negative_pots += added_pots[0]
         state = apply_rules(state, rules)
+    return state, negative_pots
+
+def first_star(input):
+    rules = parse_rules(input)
+    state = parse_inital_state(input)
+    state, negative_pots = solve_generations(state, rules, 20)
     return sum([idx - negative_pots for idx in range(len(state)) if state[idx] == "#"])
 
 def second_star(input):
-    pass
-
+    rules = parse_rules(input)
+    state = parse_inital_state(input)
+    solver = solve_generations
+    csolver = importlib.import_module("libday_12").solve_generations
+    new_state, negative_pots = csolver(deepcopy(state), rules, 2000)
+    return sum([idx - negative_pots for idx in range(len(new_state)) if new_state[idx] == "#"])
