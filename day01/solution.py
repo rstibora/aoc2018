@@ -1,20 +1,13 @@
-from utilities import list_utils
+from itertools import cycle
 
 def first_star(input):
-    frequency_offsets = [int(x) for x in input]
-    total_offset = 0
-    for offset in frequency_offsets:
-        total_offset += offset
-    return total_offset
+    return sum(int(line) for line in input)
 
 def second_star(input):
-    frequency_offsets = [int(x) for x in input]
-    infinite_list = list_utils.infinitize(frequency_offsets)
     seen_frequencies = set()
     total_offset = 0
-    for offset in infinite_list:
+    for offset in cycle(int(line) for line in input):
         total_offset += offset
         if total_offset in seen_frequencies:
             return total_offset
-        else:
-            seen_frequencies.add(total_offset)
+        seen_frequencies.add(total_offset)
