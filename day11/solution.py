@@ -1,3 +1,4 @@
+from functools import lru_cache
 from math import inf
 
 def parse_serial_number(input):
@@ -16,25 +17,21 @@ def get_power_for_cell(x, y, serial_number):
     power_level -= 5
     return power_level
 
-def get_power_for_square(x, y, serial_number, size = 3, cache = None):
-    if cache is not None:
-        if (size, x, y) in cache:
-            return cache[(size, x, y)]
+@lru_cache(None)
+def get_power_for_square(x, y, serial_number, size = 3):
     power = 0
     if size == 1:
         power = get_power_for_cell(x, y, serial_number)
     else:
-        power = get_power_for_square(x, y, serial_number, size // 2, cache)
-        power += get_power_for_square(x + size // 2, y, serial_number, size // 2, cache)
-        power += get_power_for_square(x, y + size // 2, serial_number, size // 2, cache)
+        power = get_power_for_square(x, y, serial_number, size // 2)
+        power += get_power_for_square(x + size // 2, y, serial_number, size // 2)
+        power += get_power_for_square(x, y + size // 2, serial_number, size // 2)
         if size % 2 == 0:
-            power += get_power_for_square(x + size // 2, y + size // 2, serial_number, size // 2, cache)
+            power += get_power_for_square(x + size // 2, y + size // 2, serial_number, size // 2)
         else:
-            power += get_power_for_square(x + size // 2, y + size // 2, serial_number, (size + 1) // 2, cache)
-            power += sum([get_power_for_square(line_idx, y + size - 1, serial_number, 1, cache) for line_idx in range(x, x + size // 2)])
-            power += sum([get_power_for_square(x + size - 1, column_idx, serial_number, 1, cache) for column_idx in range(y, y + size // 2)])
-    if cache is not None:
-        cache[(size, x, y)] = power
+            power += get_power_for_square(x + size // 2, y + size // 2, serial_number, (size + 1) // 2)
+            power += sum([get_power_for_square(line_idx, y + size - 1, serial_number, 1) for line_idx in range(x, x + size // 2)])
+            power += sum([get_power_for_square(x + size - 1, column_idx, serial_number, 1) for column_idx in range(y, y + size // 2)])
     return power
 
 def first_star(input):
@@ -52,13 +49,12 @@ def first_star(input):
 def second_star(input):
     # TODO: slow.
     serial_number = parse_serial_number(input)
-    cache = {}
     maximum_power = -inf
     maximum_square = (None, None)
     for size in range(1, 301):
         for x in range(1, 301 - size):
             for y in range(1, 301 - size):
-                power = get_power_for_square(x, y, serial_number, size, cache)
+                power = get_power_for_square(x, y, serial_number, size)
                 if power > maximum_power:
                     maximum_power = power
                     maximum_square = ((x, y), size)
